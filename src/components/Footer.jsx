@@ -1,4 +1,4 @@
-import { Text, Link } from "@chakra-ui/react";
+import { Text, Link, Icon } from "@chakra-ui/react";
 import { FaGithub } from "react-icons/fa";
 
 export default function Footer() {
@@ -11,7 +11,7 @@ export default function Footer() {
         alignItems="center"
         gap="0.5em"
       >
-        <FaGithub />
+        <Icon as={FaGithub}></Icon>
         <Text>Jamie Yau</Text>
       </Link>
     </>
