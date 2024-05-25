@@ -2,26 +2,30 @@ import PropTypes from "prop-types";
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
+  Divider,
   Flex,
+  HStack,
   Heading,
   Text,
 } from "@chakra-ui/react";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
 export default function PostItem({ post }) {
   const formattedDate = new Date(post.createdAt).toLocaleDateString();
-    const truncatedContent =
-      post.content.length > 100
-        ? post.content.substring(0, 100) + "..."
-        : post.content;
+  const truncatedContent =
+    post.content.length > 100
+      ? post.content.substring(0, 100) + "..."
+      : post.content;
   return (
-    <Card>
+    <Card borderTop="8px" borderColor="teal.400" bg="white">
       <CardHeader>
-        <Flex>
-          <Avatar size="sm" mr="1em"></Avatar>
+        <Flex gap="1em">
+          <Avatar size="sm" mr="1em" name={post.author}></Avatar>
           <Box>
             <Heading as="h3" size="sm">
               {post.title}
@@ -31,10 +35,20 @@ export default function PostItem({ post }) {
           </Box>
         </Flex>
       </CardHeader>
-      <CardBody color="gray.500">
+      <CardBody color="gray.500" pt="0">
         <Text>{truncatedContent}</Text>
       </CardBody>
-      <CardFooter></CardFooter>
+      <Divider borderColor="gray.200"></Divider>
+      <CardFooter>
+        <HStack>
+          <Button leftIcon={<EditIcon />} variant="ghost">
+            Edit
+          </Button>
+          <Button leftIcon={<DeleteIcon />} variant="ghost">
+            Delete
+          </Button>
+        </HStack>
+      </CardFooter>
     </Card>
   );
 }

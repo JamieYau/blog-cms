@@ -27,7 +27,7 @@ export default function RootLayout() {
       <GridItem area={"sidebar"} as="aside" p={"1em"} bg="gray.700">
         <Sidebar></Sidebar>
       </GridItem>
-      <GridItem area={"main"} as="main">
+      <GridItem area={"main"} as="main" p={4}>
         <Outlet />
       </GridItem>
       <GridItem
