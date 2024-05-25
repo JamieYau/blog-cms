@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import DeleteModal from "./DeleteModal";
+import { NavLink } from "react-router-dom";
 
 export default function PostItem({ post, onDelete }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -50,7 +51,12 @@ export default function PostItem({ post, onDelete }) {
       <Divider borderColor="gray.200"></Divider>
       <CardFooter>
         <HStack>
-          <Button leftIcon={<EditIcon />} variant="ghost">
+          <Button
+            leftIcon={<EditIcon />}
+            variant="ghost"
+            as={NavLink}
+            to={`/posts/${post._id}`}
+          >
             Edit
           </Button>
           <Button onClick={onOpen} leftIcon={<DeleteIcon />} variant="ghost">

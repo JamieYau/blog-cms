@@ -1,4 +1,4 @@
-import { Image, List, ListIcon, ListItem } from "@chakra-ui/react";
+import { Image, Link, List, ListIcon, ListItem } from "@chakra-ui/react";
 import { CalendarIcon, EditIcon } from "@chakra-ui/icons";
 import { NavLink } from "react-router-dom";
 import logo from "../assets/logo1lightcrop.png";
@@ -11,20 +11,22 @@ export default function Sidebar() {
         <Image src={logo} alt="DevBlog" height="40px"></Image>
       </ListItem>
       <ListItem>
-        <ListIcon as={CalendarIcon} />
-        <NavLink to="/">DashBoard</NavLink>
+        <Link as={NavLink} to="/">
+          <ListIcon as={CalendarIcon} />
+          DashBoard
+        </Link>
       </ListItem>
       <ListItem>
-        <NavLink to="/create">
+        <Link as={NavLink} to="/create">
           <ListIcon as={EditIcon} />
           New Post
-        </NavLink>
+        </Link>
       </ListItem>
       <ListItem>
-        <NavLink to="/profile">
-          <ListIcon as={FaUserCircle}/>
+        <Link as={NavLink}  to="/profile">
+          <ListIcon as={FaUserCircle} />
           Profile
-        </NavLink>
+        </Link>
       </ListItem>
     </List>
   );

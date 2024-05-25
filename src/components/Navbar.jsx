@@ -4,20 +4,21 @@ import useAuth from "../contexts/useAuth";
 
 export default function NavBar() {
   const { user, logout } = useAuth();
+
   return (
     <>
       <Spacer />
       {user ? (
         <HStack spacing="20px">
-            <Avatar name={user.username} />
-            <Text as="b">{user.username}</Text>
+          <Avatar name={user.username} />
+          <Text as="b">{user.username}</Text>
           <Button onClick={logout} colorScheme="teal">
             Logout
           </Button>
         </HStack>
       ) : (
-        <Button colorScheme="teal">
-          <NavLink to="login">Login</NavLink>
+        <Button colorScheme="teal" as={NavLink} to="login">
+          Login
         </Button>
       )}
     </>
