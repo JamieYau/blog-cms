@@ -8,7 +8,6 @@ export default function DashboardPage() {
   const revalidator = useRevalidator();
 
   const handleDeletePost = async (deletedPostId) => {
-    // Call the API to delete the post
     await deletePostById(deletedPostId);
     // Revalidate the loader data to refresh the list
     revalidator.revalidate();

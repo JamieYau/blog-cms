@@ -12,15 +12,23 @@ import {
   HStack,
   Heading,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import DeleteModal from "./DeleteModal";
 
 export default function PostItem({ post, onDelete }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const formattedDate = new Date(post.createdAt).toLocaleDateString();
   const truncatedContent =
     post.content.length > 100
       ? post.content.substring(0, 100) + "..."
       : post.content;
+
+  const handleDelete = () => {
+    onDelete(post._id);
+    onClose();
+  };
 
   return (
     <Card borderTop="8px" borderColor="teal.400" bg="white">
@@ -45,15 +53,12 @@ export default function PostItem({ post, onDelete }) {
           <Button leftIcon={<EditIcon />} variant="ghost">
             Edit
           </Button>
-          <Button
-            onClick={() => onDelete(post._id)}
-            leftIcon={<DeleteIcon />}
-            variant="ghost"
-          >
+          <Button onClick={onOpen} leftIcon={<DeleteIcon />} variant="ghost">
             Delete
           </Button>
         </HStack>
       </CardFooter>
+      <DeleteModal isOpen={isOpen} onClose={onClose} onDelete={handleDelete} />
     </Card>
   );
 }
