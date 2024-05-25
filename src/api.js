@@ -1,42 +1,50 @@
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 export async function getPosts() {
-  let posts;
-  // Fetch the list of blog posts from your API
   try {
-    const response = await fetch(`${BASE_URL}/posts`);
+    const token = localStorage.getItem("token");
+    const headers = {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
+    };
+
+    const response = await fetch(`${BASE_URL}/posts`, { headers });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error("Failed to fetch posts: " + errorData.errors);
+    }
+
     const postsData = await response.json();
     if (!postsData.success) {
-      throw new Error("Failed to fetch post: " + postsData.errors);
+      throw new Error("Failed to fetch posts: " + postsData.errors);
     }
-    posts = postsData.data;
 
-    // Fetch the author's name for each post
-    const postsWithAuthors = await Promise.all(
-      posts.map(async (post) => {
-        const authorResponse = await fetch(
-          `${BASE_URL}/users/${post.authorId}`
-        );
-        const authorData = await authorResponse.json();
+    const posts = postsData.data;
 
-        if (!authorData.success) {
-          throw new Error(
-            "Failed to fetch author details for post: " + authorData.errors
-          );
-        }
-
-        return {
-          ...post,
-          author: authorData.data.username,
-        };
-      })
+    // Fetch the authors in parallel
+    const authorPromises = posts.map((post) =>
+      fetch(`${BASE_URL}/users/${post.authorId}`).then((res) => res.json())
     );
-    posts = postsWithAuthors;
+
+    const authors = await Promise.all(authorPromises);
+
+    const postsWithAuthors = posts.map((post, index) => {
+      const authorData = authors[index];
+      if (!authorData.success) {
+        console.warn(
+          `Failed to fetch author details for post ${post._id}: ${authorData.errors}`
+        );
+        return { ...post, author: "Unknown" };
+      }
+      return { ...post, author: authorData.data.username };
+    });
+
+    return postsWithAuthors;
   } catch (error) {
     console.error("Error fetching posts:", error);
     return null;
   }
-  return posts;
 }
 
 // Function to fetch a single post by its postId
@@ -44,8 +52,12 @@ export async function getPost(postId) {
   try {
     // Fetch the post data from your API
     const response = await fetch(`${BASE_URL}/posts/${postId}`);
-    const postData = await response.json();
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error("Failed to fetch posts: " + errorData.errors);
+    }
 
+    const postData = await response.json();
     if (!postData.success) {
       throw new Error("Failed to fetch post: " + postData.errors);
     }
@@ -57,17 +69,16 @@ export async function getPost(postId) {
     const authorData = await authorResponse.json();
 
     if (!authorData.success) {
-      throw new Error(
-        "Failed to fetch author details for post: " + authorData.errors
+      console.warn(
+        `Failed to fetch author details for post ${post._id}: ${authorData.errors}`
       );
+      return { ...post, author: "Unknown" };
     }
-
-    const authorName = authorData.data.username;
 
     // Add the author's name to the post data
     return {
       ...post,
-      author: authorName,
+      author: authorData.data.username,
     };
   } catch (error) {
     console.error("Error fetching post:", error);
@@ -130,7 +141,7 @@ export async function login(username, password) {
       throw new Error(data.message || "Login failed");
     }
 
-    return data; // Assuming the data contains { success: true, token }
+    return data;
   } catch (error) {
     throw new Error(error.message || "An error occurred");
   }
