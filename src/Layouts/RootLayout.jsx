@@ -11,7 +11,7 @@ export default function RootLayout() {
       <Grid
         templateAreas={`"sidebar nav"
                         "sidebar main"
-                        "sidebar footer"`}
+                        "footer footer"`}
         templateRows={"auto 1fr auto"}
         templateColumns={"auto 1fr"}
         minH="100vh"

@@ -159,3 +159,24 @@ export async function postComment(postId, comment) {
   });
   return response.json();
 }
+
+export async function deletePostById(postId) {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await fetch(`${BASE_URL}/posts/${postId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (response.status === 204) {
+      return;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.error);
+    }
+  } catch (error) {
+    console.error("Error deleting post:", error);
+  }
+}

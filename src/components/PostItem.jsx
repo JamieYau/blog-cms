@@ -15,17 +15,18 @@ import {
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
-export default function PostItem({ post }) {
+export default function PostItem({ post, onDelete }) {
   const formattedDate = new Date(post.createdAt).toLocaleDateString();
   const truncatedContent =
     post.content.length > 100
       ? post.content.substring(0, 100) + "..."
       : post.content;
+
   return (
     <Card borderTop="8px" borderColor="teal.400" bg="white">
       <CardHeader>
         <Flex gap="1em">
-          <Avatar size="sm" mr="1em" name={post.author}></Avatar>
+          <Avatar size="md" mr="1em" name={post.author}></Avatar>
           <Box>
             <Heading as="h3" size="sm">
               {post.title}
@@ -44,7 +45,11 @@ export default function PostItem({ post }) {
           <Button leftIcon={<EditIcon />} variant="ghost">
             Edit
           </Button>
-          <Button leftIcon={<DeleteIcon />} variant="ghost">
+          <Button
+            onClick={() => onDelete(post._id)}
+            leftIcon={<DeleteIcon />}
+            variant="ghost"
+          >
             Delete
           </Button>
         </HStack>
@@ -62,4 +67,5 @@ PostItem.propTypes = {
     author: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
   }).isRequired,
+  onDelete: PropTypes.func.isRequired,
 };

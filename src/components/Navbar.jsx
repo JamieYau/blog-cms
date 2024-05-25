@@ -1,4 +1,4 @@
-import { Button, HStack, Spacer, Avatar } from "@chakra-ui/react";
+import { Button, HStack, Spacer, Avatar, Text } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 import useAuth from "../contexts/useAuth";
 
@@ -9,8 +9,11 @@ export default function NavBar() {
       <Spacer />
       {user ? (
         <HStack spacing="20px">
-          <Avatar name={user.username} />
-          <Button onClick={logout} colorScheme="teal">Logout</Button>
+            <Avatar name={user.username} />
+            <Text as="b">{user.username}</Text>
+          <Button onClick={logout} colorScheme="teal">
+            Logout
+          </Button>
         </HStack>
       ) : (
         <Button colorScheme="teal">
