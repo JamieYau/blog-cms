@@ -12,7 +12,7 @@ export default function NavBar() {
         <HStack spacing="20px">
           <Avatar name={user.username} />
           <Text as="b">{user.username}</Text>
-          <Button onClick={logout} colorScheme="teal">
+          <Button onClick={logout} variant="outline" colorScheme="teal">
             Logout
           </Button>
         </HStack>

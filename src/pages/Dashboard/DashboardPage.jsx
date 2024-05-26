@@ -1,7 +1,8 @@
-import { SimpleGrid, Heading } from "@chakra-ui/react";
-import { useLoaderData, useRevalidator } from "react-router-dom";
+import { SimpleGrid, Heading, Button, Flex, Spacer } from "@chakra-ui/react";
+import { NavLink, useLoaderData, useRevalidator } from "react-router-dom";
 import PostItem from "../../components/PostItem";
 import { deletePostById } from "../../api";
+import { AddIcon } from "@chakra-ui/icons";
 
 export default function DashboardPage() {
   const posts = useLoaderData();
@@ -15,7 +16,11 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Heading>Dashboard</Heading>
+      <Flex>
+        <Heading>Dashboard</Heading>
+        <Spacer></Spacer>
+        <Button leftIcon={<AddIcon />} as={NavLink} to="create">Create</Button>
+      </Flex>
       <SimpleGrid spacing={4} minChildWidth="300px">
         {posts.map((post) => (
           <PostItem

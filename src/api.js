@@ -180,3 +180,25 @@ export async function deletePostById(postId) {
     console.error("Error deleting post:", error);
   }
 }
+
+export async function createPost(postData) {
+   const token = localStorage.getItem("token");
+   try {
+     const response = await fetch(`${BASE_URL}/posts`, {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+         Authorization: `Bearer ${token}`,
+       },
+       body: JSON.stringify(postData)
+     });
+     if (response.status === 201) {
+       return;
+     } else {
+       const errorData = await response.json();
+       throw new Error(errorData.error);
+     }
+   } catch (error) {
+     throw new Error(error.message || "An error occurred");
+   }
+}
