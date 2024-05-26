@@ -182,23 +182,36 @@ export async function deletePostById(postId) {
 }
 
 export async function createPost(postData) {
-   const token = localStorage.getItem("token");
-   try {
-     const response = await fetch(`${BASE_URL}/posts`, {
-       method: "POST",
-       headers: {
-         "Content-Type": "application/json",
-         Authorization: `Bearer ${token}`,
-       },
-       body: JSON.stringify(postData)
-     });
-     if (response.status === 201) {
-       return;
-     } else {
-       const errorData = await response.json();
-       throw new Error(errorData.error);
-     }
-   } catch (error) {
-     throw new Error(error.message || "An error occurred");
-   }
+  const token = localStorage.getItem("token");
+  try {
+    const response = await fetch(`${BASE_URL}/posts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(postData),
+    });
+
+    if (response.ok) {
+      return; // Success
+    }
+
+    // Handle non-2xx responses
+    let errorMessage = "An error occurred";
+    if (response.status === 403) {
+      errorMessage = "You are not authorized to perform this action. Please Login.";
+    } else if (response.status === 400) {
+      const errorData = await response.json();
+      errorMessage = errorData.error || "Invalid request";
+    } else {
+      const errorData = await response.json();
+      errorMessage = errorData.error || "An unexpected error occurred";
+    }
+
+    throw new Error(errorMessage);
+  } catch (error) {
+    console.error("Error creating post:", error);
+    throw error;
+  }
 }
