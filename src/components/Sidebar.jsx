@@ -17,7 +17,7 @@ export default function Sidebar() {
         </Link>
       </ListItem>
       <ListItem>
-        <Link as={NavLink} to="/create">
+        <Link as={NavLink} to="/posts/create">
           <ListIcon as={EditIcon} />
           New Post
         </Link>

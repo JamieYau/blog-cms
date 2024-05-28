@@ -19,7 +19,7 @@ export default function DashboardPage() {
       <Flex>
         <Heading>Dashboard</Heading>
         <Spacer></Spacer>
-        <Button leftIcon={<AddIcon />} as={NavLink} to="create">Create</Button>
+        <Button leftIcon={<AddIcon />} as={NavLink} to="/posts/create">Create</Button>
       </Flex>
       <SimpleGrid spacing={4} minChildWidth="300px">
         {posts.map((post) => (

@@ -6,7 +6,7 @@ import {
   Input,
   Button,
 } from "@chakra-ui/react";
-import useAuth from "../contexts/useAuth";
+import useAuth from "../../contexts/useAuth";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -64,7 +64,10 @@ export default function LoginPage() {
         Submit
       </Button>
       <FormControl isInvalid={errors.root}>
-        <FormErrorMessage> {errors.root && errors.root.message}</FormErrorMessage>
+        <FormErrorMessage>
+          {" "}
+          {errors.root && errors.root.message}
+        </FormErrorMessage>
       </FormControl>
     </form>
   );

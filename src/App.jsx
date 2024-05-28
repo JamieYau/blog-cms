@@ -1,11 +1,13 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayout from "./Layouts/RootLayout";
-import ErrorPage from "./pages/ErrorPage";
+import ErrorPage from "./pages/Error/ErrorPage";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
 import DashboardLoader from "./pages/Dashboard/Dashboard.loader";
-import LoginPage from "./pages/LoginPage";
-import NewPostPage from "./pages/NewPostPage";
-import ProfilePage from "./pages/ProfilePage";
+import LoginPage from "./pages/Login/LoginPage";
+import NewPostPage from "./pages/NewPost/NewPostPage";
+import PostPage from "./pages/PostPage/PostPage";
+import ProfilePage from "./pages/Profile/ProfilePage";
+import EditPostPage from "./pages/EditPost/EditPostPage";
 
 const router = createBrowserRouter([
   {
@@ -16,15 +18,25 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <DashboardPage />,
-        loader: DashboardLoader
+        loader: DashboardLoader,
       },
       {
         path: "login",
         element: <LoginPage />,
       },
       {
-        path: "create",
+        path: "/posts/create",
         element: <NewPostPage />,
+      },
+      {
+        path: "/posts/:postId",
+        element: <PostPage />,
+        children: [
+          {
+            path: "edit",
+            element: <EditPostPage />
+          }
+        ]
       },
       {
         path: "profile",
@@ -33,7 +45,6 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
 
 function App() {
   return <RouterProvider router={router} />;

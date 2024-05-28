@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Editor } from "@tinymce/tinymce-react";
 import { z } from "zod";
-import { createPost } from "../api";
+import { createPost } from "../../api";
 import { useNavigate } from "react-router-dom";
 
 const TINYMCE_API_KEY = import.meta.env.VITE_TINYMCE_API_KEY;
@@ -37,7 +37,7 @@ export default function NewPostPage() {
   const onSubmit = async (values) => {
     try {
       await createPost(values);
-      navigate("/")
+      navigate("/");
     } catch (error) {
       setError("root", {
         message: error.message || "An error occurred. Please try again.",
