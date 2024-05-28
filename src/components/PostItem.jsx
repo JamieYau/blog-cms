@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import DeleteModal from "./DeleteModal";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 // Utility function to strip HTML tags and extract text content
 const stripHtmlTags = (html) => {
@@ -25,6 +25,7 @@ const stripHtmlTags = (html) => {
 };
 
 export default function PostItem({ post, onDelete }) {
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const formattedDate = new Date(post.createdAt).toLocaleDateString();
   const truncatedContent =
@@ -37,8 +38,23 @@ export default function PostItem({ post, onDelete }) {
     onClose();
   };
 
+  const handleCardClick = () => {
+    navigate(`/posts/${post._id}`);
+  };
+
+  const handleOpenModal = (e) => {
+    e.stopPropagation();
+    onOpen();
+  };
+
   return (
-    <Card borderTop="8px" borderColor="teal.400" bg="white">
+    <Card
+      onClick={handleCardClick}
+      borderTop="8px"
+      borderColor="teal.400"
+      bg="white"
+      cursor="pointer"
+    >
       <CardHeader>
         <Flex gap="1em">
           <Avatar size="md" mr="1em" name={post.author}></Avatar>
@@ -61,11 +77,16 @@ export default function PostItem({ post, onDelete }) {
             leftIcon={<EditIcon />}
             variant="ghost"
             as={NavLink}
-            to={`/posts/${post._id}`}
+            to={`/posts/${post._id}/edit`}
+            onClick={(e) => e.stopPropagation()}
           >
             Edit
           </Button>
-          <Button onClick={onOpen} leftIcon={<DeleteIcon />} variant="ghost">
+          <Button
+            onClick={(e) => handleOpenModal(e)}
+            leftIcon={<DeleteIcon />}
+            variant="ghost"
+          >
             Delete
           </Button>
         </HStack>

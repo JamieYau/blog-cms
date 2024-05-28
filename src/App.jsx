@@ -29,14 +29,12 @@ const router = createBrowserRouter([
         element: <NewPostPage />,
       },
       {
-        path: "/posts/:postId",
+        path: "posts/:postId",
         element: <PostPage />,
-        children: [
-          {
-            path: "edit",
-            element: <EditPostPage />
-          }
-        ]
+      },
+      {
+        path: "posts/:postId/edit",
+        element: <EditPostPage />,
       },
       {
         path: "profile",
