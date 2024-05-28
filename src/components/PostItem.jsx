@@ -18,13 +18,19 @@ import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import DeleteModal from "./DeleteModal";
 import { NavLink } from "react-router-dom";
 
+// Utility function to strip HTML tags and extract text content
+const stripHtmlTags = (html) => {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  return doc.body.textContent || "";
+};
+
 export default function PostItem({ post, onDelete }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const formattedDate = new Date(post.createdAt).toLocaleDateString();
   const truncatedContent =
-    post.content.length > 100
-      ? post.content.substring(0, 100) + "..."
-      : post.content;
+    stripHtmlTags(post.content).length > 100
+      ? stripHtmlTags(post.content).substring(0, 100) + "..."
+      : stripHtmlTags(post.content);
 
   const handleDelete = () => {
     onDelete(post._id);
