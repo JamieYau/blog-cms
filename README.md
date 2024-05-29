@@ -2,7 +2,6 @@
 
 ## TODO
 - add profile page, edit password form.
-- add edit post page, tinymce editor
 - filters
 - sort
 - edit comments
