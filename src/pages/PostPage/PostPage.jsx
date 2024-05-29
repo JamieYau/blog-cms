@@ -12,6 +12,7 @@ import {
 import { useLoaderData } from "react-router-dom";
 import Comment from "../../components/Comment";
 import { formattedDate } from "../../helpers";
+import { CheckCircleIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 export default function PostPage() {
   const { post, comments } = useLoaderData();
@@ -37,6 +38,17 @@ export default function PostPage() {
           </Text>
         </VStack>
       </Flex>
+      {post.published ? (
+        <HStack color="green" mb={2}>
+          <CheckCircleIcon />
+          <Text as="b">Published</Text>
+        </HStack>
+      ) : (
+        <HStack color="gray" mb={2}>
+          <ViewOffIcon />
+          <Text as={"b"}>Unpublished</Text>
+        </HStack>
+      )}
       <Box
         dangerouslySetInnerHTML={{ __html: post.content }}
         p={4}
