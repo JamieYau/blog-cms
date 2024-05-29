@@ -1,10 +1,12 @@
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
+  Avatar,
   Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
+  HStack,
   ListItem,
   Text,
   useDisclosure,
@@ -13,6 +15,7 @@ import PropTypes from "prop-types";
 import DeleteModal from "./DeleteModal";
 import { useRevalidator } from "react-router-dom";
 import { deleteComment } from "../api";
+import { formattedDate } from "../helpers";
 
 export default function Comment({ comment }) {
   const revalidator = useRevalidator();
@@ -31,9 +34,12 @@ export default function Comment({ comment }) {
       borderColor="gray.300"
       borderRadius="5px"
     >
-      <CardHeader py={1}>
-        <Text>{comment.author}</Text>
-        <Text>{new Date(comment.createdAt).toLocaleDateString()}</Text>
+      <CardHeader as={HStack} gap={2} pb={0}>
+        <Avatar name={comment.author} size={"sm"} />
+        <Text as="b">{comment.author}</Text>
+        <Text as="i" pl={2} borderLeft="1px solid" borderColor="gray.300">
+          {formattedDate(comment.createdAt)}
+        </Text>
       </CardHeader>
       <CardBody py={1}>
         <Text>{comment.content}</Text>
