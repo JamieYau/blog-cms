@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { createPost } from "../../api";
-import PostForm from "./PostForm";
+import PostForm from "../../components/PostForm";
 
 export default function NewPostPage() {
   const navigate = useNavigate();
