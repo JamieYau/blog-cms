@@ -273,3 +273,39 @@ export async function updatePost(postId, postData) {
     throw error;
   }
 }
+
+export async function updateComment(commentId, content) {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await fetch(`${BASE_URL}/comments/${commentId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(content),
+    });
+
+    if (response.ok) {
+      return; // Success
+    }
+
+    // Handle non-2xx responses
+    let errorMessage = "An error occurred";
+    if (response.status === 403) {
+      errorMessage =
+        "You are not authorized to perform this action. Please Login.";
+    } else if (response.status === 400) {
+      const errorData = await response.json();
+      errorMessage = errorData.error || "Invalid request";
+    } else {
+      const errorData = await response.json();
+      errorMessage = errorData.error || "An unexpected error occurred";
+    }
+
+    throw new Error(errorMessage);
+  } catch (error) {
+    console.error("Error Updating comment:", error);
+    throw error;
+  }
+}

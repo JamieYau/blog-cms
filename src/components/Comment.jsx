@@ -14,16 +14,32 @@ import {
 import PropTypes from "prop-types";
 import DeleteModal from "./DeleteModal";
 import { useRevalidator } from "react-router-dom";
-import { deleteComment } from "../api";
+import { deleteComment, updateComment } from "../api";
 import { formattedDate } from "../helpers";
+import EditModal from "./EditModal";
 
 export default function Comment({ comment }) {
   const revalidator = useRevalidator();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onClose: onEditClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
 
   const handleDelete = async () => {
     await deleteComment(comment._id);
-    onClose();
+    onDeleteClose();
+    revalidator.revalidate();
+  };
+
+  const handleEdit = async (updatedContent) => {
+    await updateComment(comment._id, { content: updatedContent });
+    onEditClose();
     revalidator.revalidate();
   };
 
@@ -45,18 +61,28 @@ export default function Comment({ comment }) {
         <Text>{comment.content}</Text>
       </CardBody>
       <CardFooter justifyContent="flex-end" p={0}>
-        <Button leftIcon={<EditIcon />} variant="ghost">
+        <Button onClick={onEditOpen} leftIcon={<EditIcon />} variant="ghost">
           Edit
         </Button>
-        <Button onClick={onOpen} leftIcon={<DeleteIcon />} variant="ghost">
+        <Button
+          onClick={onDeleteOpen}
+          leftIcon={<DeleteIcon />}
+          variant="ghost"
+        >
           Delete
         </Button>
       </CardFooter>
       <DeleteModal
         type="comment"
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isDeleteOpen}
+        onClose={onDeleteClose}
         onDelete={handleDelete}
+      />
+      <EditModal
+        isOpen={isEditOpen}
+        onClose={onEditClose}
+        onEdit={handleEdit}
+        initialContent={comment.content}
       />
     </Card>
   );
