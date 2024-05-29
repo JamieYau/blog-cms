@@ -16,7 +16,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Flex>
+      <Flex mb={4}>
         <Heading>Dashboard</Heading>
         <Spacer></Spacer>
         <Button leftIcon={<AddIcon />} as={NavLink} to="/posts/create">Create</Button>

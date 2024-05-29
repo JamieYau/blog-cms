@@ -21,12 +21,16 @@ const postSchema = z.object({
   published: z.boolean().optional(),
 });
 
-export default function PostForm({ initialValues = {}, onSubmit }) {
+export default function PostForm({
+  initialValues = {},
+  onSubmit,
+  isSubmitting,
+}) {
   const {
     handleSubmit,
     register,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     watch,
   } = useForm({
     resolver: zodResolver(postSchema),
@@ -103,4 +107,5 @@ PostForm.propTypes = {
     published: PropTypes.bool,
   }),
   onSubmit: PropTypes.func.isRequired,
+  isSubmitting: PropTypes.bool.isRequired,
 };

@@ -9,7 +9,8 @@ export default function EditPostPage() {
   const navigate = useNavigate();
   const { postId } = useParams();
   const [initialData, setInitialData] = useState(null);
-  const { setError, formState } = useForm();
+  const { setError } = useForm();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -24,7 +25,7 @@ export default function EditPostPage() {
   }, [postId]);
 
   const handleUpdatePost = async (values) => {
-    formState.isSubmitting = true;
+    setIsSubmitting(true);
     try {
       await updatePost(postId, values);
       navigate(`/posts/${postId}`);
@@ -33,7 +34,7 @@ export default function EditPostPage() {
         message: error.message || "An error occurred. Please try again.",
       });
     } finally {
-      formState.isSubmitting = false;
+      setIsSubmitting(false);
     }
   };
 
@@ -45,5 +46,11 @@ export default function EditPostPage() {
     );
   }
 
-  return <PostForm initialValues={initialData} onSubmit={handleUpdatePost} />;
+  return (
+    <PostForm
+      initialValues={initialData}
+      onSubmit={handleUpdatePost}
+      isSubmitting={isSubmitting}
+    />
+  );
 }
