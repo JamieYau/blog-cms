@@ -80,7 +80,7 @@ export default function PostItem({ post, onDelete }) {
           </Button>
         </HStack>
       </CardFooter>
-      <DeleteModal isOpen={isOpen} onClose={onClose} onDelete={handleDelete} />
+      <DeleteModal type="post" isOpen={isOpen} onClose={onClose} onDelete={handleDelete} />
     </LinkBox>
   );
 }

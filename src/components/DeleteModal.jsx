@@ -11,7 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-export default function DeleteModal({ isOpen, onClose, onDelete }) {
+export default function DeleteModal({ type, isOpen, onClose, onDelete }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
@@ -20,7 +20,7 @@ export default function DeleteModal({ isOpen, onClose, onDelete }) {
         <ModalCloseButton />
         <ModalBody>
           <Text>
-            Are you sure you want to delete this post? This action cannot be undone.
+            {`Are you sure you want to delete this ${type}? This action cannot be undone.`}
           </Text>
         </ModalBody>
         <ModalFooter>
@@ -37,6 +37,7 @@ export default function DeleteModal({ isOpen, onClose, onDelete }) {
 }
 
 DeleteModal.propTypes = {
+  type: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,

@@ -5,17 +5,25 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  Flex,
-  HStack,
   ListItem,
-  Spacer,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
+import DeleteModal from "./DeleteModal";
+import { useRevalidator } from "react-router-dom";
+import { deleteComment } from "../api";
 
 export default function Comment({ comment }) {
+  const revalidator = useRevalidator();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleDelete = async () => {
+    await deleteComment(comment._id);
+    onClose();
+    revalidator.revalidate();
+  };
+
   return (
     <Card
       as={ListItem}
@@ -31,13 +39,19 @@ export default function Comment({ comment }) {
         <Text>{comment.content}</Text>
       </CardBody>
       <CardFooter justifyContent="flex-end" p={0}>
-        <Button leftIcon={<EditIcon />} variant="ghost">Edit</Button>
-        <Button
-          onClick={onOpen}
-          leftIcon={<DeleteIcon />}
-          variant="ghost"
-        >Delete</Button>
+        <Button leftIcon={<EditIcon />} variant="ghost">
+          Edit
+        </Button>
+        <Button onClick={onOpen} leftIcon={<DeleteIcon />} variant="ghost">
+          Delete
+        </Button>
       </CardFooter>
+      <DeleteModal
+        type="comment"
+        isOpen={isOpen}
+        onClose={onClose}
+        onDelete={handleDelete}
+      />
     </Card>
   );
 }

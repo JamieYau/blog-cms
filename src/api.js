@@ -200,7 +200,8 @@ export async function createPost(postData) {
     // Handle non-2xx responses
     let errorMessage = "An error occurred";
     if (response.status === 403) {
-      errorMessage = "You are not authorized to perform this action. Please Login.";
+      errorMessage =
+        "You are not authorized to perform this action. Please Login.";
     } else if (response.status === 400) {
       const errorData = await response.json();
       errorMessage = errorData.error || "Invalid request";
@@ -213,5 +214,26 @@ export async function createPost(postData) {
   } catch (error) {
     console.error("Error creating post:", error);
     throw error;
+  }
+}
+
+export async function deleteComment(commentId) {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await fetch(`${BASE_URL}/comments/${commentId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (response.status === 204) {
+      return;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.error);
+    }
+  } catch (error) {
+    console.error("Error deleting comment:", error);
   }
 }
