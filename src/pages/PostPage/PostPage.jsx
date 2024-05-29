@@ -1,5 +1,12 @@
-import { Box, Flex, Heading, List, ListItem, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  List,
+  Text,
+} from "@chakra-ui/react";
 import { useLoaderData } from "react-router-dom";
+import Comment from "../../components/Comment";
 
 export default function PostPage() {
   const { post, comments } = useLoaderData();
@@ -22,16 +29,7 @@ export default function PostPage() {
         <Heading as="h3">Comments</Heading>
         <List>
           {comments.map((comment) => (
-            <ListItem
-              key={comment._id}
-              border="1px solid"
-              borderColor="gray.300"
-              borderRadius="5px"
-            >
-              <Text>{comment.author}</Text>
-              <Text>{new Date(comment.createdAt).toLocaleDateString()}</Text>
-              <Text>{comment.content}</Text>
-            </ListItem>
+            <Comment key={comment._id} comment={comment}/>
           ))}
         </List>
       </Flex>

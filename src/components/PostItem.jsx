@@ -89,10 +89,13 @@ export default function PostItem({ post, onDelete }) {
 PostItem.propTypes = {
   post: PropTypes.shape({
     _id: PropTypes.string.isRequired,
+    authorId: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
-    author: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
+    updatedAt: PropTypes.string.isRequired,
+    published: PropTypes.bool.isRequired,
   }).isRequired,
   onDelete: PropTypes.func.isRequired,
 };
