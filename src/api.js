@@ -187,10 +187,9 @@ export async function createPost(postData) {
     const response = await fetch(`${BASE_URL}/posts`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(postData),
+      body: postData, // Send FormData object directly
     });
 
     if (response.ok) {
