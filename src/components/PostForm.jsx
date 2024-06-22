@@ -19,6 +19,8 @@ const postSchema = z.object({
   title: z.string().min(3, "Title is required"),
   content: z.string().min(8, "Content must be at least 8 characters long"),
   published: z.boolean().optional(),
+  tags: z.string().optional(), // Assuming tags is a comma-separated string
+  coverImage: z.any().optional(), // Include coverImage in the schema
 });
 
 export default function PostForm({
@@ -37,6 +39,13 @@ export default function PostForm({
     defaultValues: initialValues,
   });
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setValue("coverImage", file);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl isInvalid={errors.title}>
@@ -45,6 +54,15 @@ export default function PostForm({
         <FormErrorMessage>
           {errors.title && errors.title.message}
         </FormErrorMessage>
+      </FormControl>
+      <FormControl>
+        <FormLabel htmlFor="cover-image">Cover Image</FormLabel>
+        <Input
+          id="cover-image"
+          type="file"
+          onChange={handleFileChange}
+          accept="image/*"
+        />
       </FormControl>
       <FormControl isInvalid={errors.content}>
         <FormLabel htmlFor="content">Content</FormLabel>
@@ -88,6 +106,18 @@ export default function PostForm({
           Publish
         </Checkbox>
       </Flex>
+      <FormControl isInvalid={errors.tags}>
+        <FormLabel htmlFor="tags">Tags</FormLabel>
+        <Input
+          id="tags"
+          placeholder="Tags"
+          {...register("tags")}
+          // Assuming tags should be comma-separated
+        />
+        <FormErrorMessage>
+          {errors.tags && errors.tags.message}
+        </FormErrorMessage>
+      </FormControl>
       <FormControl isInvalid={errors.root}>
         <FormErrorMessage>
           {errors.root && errors.root.message}
