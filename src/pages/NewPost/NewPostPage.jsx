@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { createPost } from "../../api";
 import PostForm from "../../components/PostForm";
+import { createFormData } from "../../helpers";
 
 export default function NewPostPage() {
   const navigate = useNavigate();
@@ -12,7 +13,8 @@ export default function NewPostPage() {
   const handleCreatePost = async (values) => {
     setIsSubmitting(true);
     try {
-      await createPost(values);
+      const formData = createFormData(values);
+      await createPost(formData);
       navigate("/");
     } catch (error) {
       setError("root", {

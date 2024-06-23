@@ -12,6 +12,8 @@ import {
 } from "@chakra-ui/react";
 import { Editor } from "@tinymce/tinymce-react";
 import { z } from "zod";
+import InputTag from "./InputTag";
+import { useEffect, useState } from "react";
 
 const TINYMCE_API_KEY = import.meta.env.VITE_TINYMCE_API_KEY;
 
@@ -19,6 +21,8 @@ const postSchema = z.object({
   title: z.string().min(3, "Title is required"),
   content: z.string().min(8, "Content must be at least 8 characters long"),
   published: z.boolean().optional(),
+  tags: z.array(z.string()).optional(),
+  coverImage: z.any().optional(),
 });
 
 export default function PostForm({
@@ -37,6 +41,26 @@ export default function PostForm({
     defaultValues: initialValues,
   });
 
+  const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    if (initialValues.coverImageUrl) {
+      setImagePreview(initialValues.coverImageUrl);
+    }
+  }, [initialValues.coverImageUrl]);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setValue("coverImage", file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleTagsChange = (tags) => {
+    setValue("tags", tags);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl isInvalid={errors.title}>
@@ -45,6 +69,23 @@ export default function PostForm({
         <FormErrorMessage>
           {errors.title && errors.title.message}
         </FormErrorMessage>
+      </FormControl>
+      <FormControl>
+        <FormLabel htmlFor="cover-image">Cover Image</FormLabel>
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Cover Preview"
+            style={{ width: "200px", marginBottom: "10px" }}
+          />
+        )}
+        <Input
+          id="cover-image"
+          type="file"
+          onChange={handleFileChange}
+          accept="image/*"
+          p={1}
+        />
       </FormControl>
       <FormControl isInvalid={errors.content}>
         <FormLabel htmlFor="content">Content</FormLabel>
@@ -88,6 +129,16 @@ export default function PostForm({
           Publish
         </Checkbox>
       </Flex>
+      <FormControl isInvalid={errors.tags}>
+        <FormLabel htmlFor="tags">Tags</FormLabel>
+        <InputTag
+          initialTags={initialValues.tags || []}
+          onChange={handleTagsChange}
+        />
+        <FormErrorMessage>
+          {errors.tags && errors.tags.message}
+        </FormErrorMessage>
+      </FormControl>
       <FormControl isInvalid={errors.root}>
         <FormErrorMessage>
           {errors.root && errors.root.message}
@@ -105,6 +156,7 @@ PostForm.propTypes = {
     title: PropTypes.string,
     content: PropTypes.string,
     published: PropTypes.bool,
+    tags: PropTypes.arrayOf(PropTypes.string), // Adjust this to match your new tags structure
   }),
   onSubmit: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool.isRequired,

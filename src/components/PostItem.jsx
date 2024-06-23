@@ -11,8 +11,10 @@ import {
   Flex,
   HStack,
   Heading,
+  Image,
   LinkBox,
   LinkOverlay,
+  Tag,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -49,6 +51,7 @@ export default function PostItem({ post, onDelete }) {
     >
       <LinkOverlay as={NavLink} to={`/posts/${post._id}`}>
         <CardHeader>
+          <Image src={post.coverImageUrl} pb={4} />
           <Flex gap="1em">
             <Avatar size="md" mr="1em" name={post.author}></Avatar>
             <Box>
@@ -63,6 +66,11 @@ export default function PostItem({ post, onDelete }) {
       </LinkOverlay>
       <CardBody color="gray.500" pt="0">
         <Text>{truncatedContent}</Text>
+        <HStack pt={4}>
+          {post.tags.map((tag) => (
+            <Tag key={tag}>{tag}</Tag>
+          ))}
+        </HStack>
       </CardBody>
       <Divider borderColor="gray.200"></Divider>
       <CardFooter>
@@ -80,7 +88,12 @@ export default function PostItem({ post, onDelete }) {
           </Button>
         </HStack>
       </CardFooter>
-      <DeleteModal type="post" isOpen={isOpen} onClose={onClose} onDelete={handleDelete} />
+      <DeleteModal
+        type="post"
+        isOpen={isOpen}
+        onClose={onClose}
+        onDelete={handleDelete}
+      />
     </LinkBox>
   );
 }
@@ -93,6 +106,8 @@ PostItem.propTypes = {
     author: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
+    coverImageUrl: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.string),
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string.isRequired,
     published: PropTypes.bool.isRequired,

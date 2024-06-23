@@ -4,6 +4,7 @@ import { getPost, updatePost } from "../../api";
 import PostForm from "../../components/PostForm";
 import { Flex, Spinner } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
+import { createFormData } from "../../helpers";
 
 export default function EditPostPage() {
   const navigate = useNavigate();
@@ -27,7 +28,8 @@ export default function EditPostPage() {
   const handleUpdatePost = async (values) => {
     setIsSubmitting(true);
     try {
-      await updatePost(postId, values);
+      const formData = createFormData(values);
+      await updatePost(postId, formData);
       navigate(`/posts/${postId}`);
     } catch (error) {
       setError("root", {

@@ -4,8 +4,10 @@ import {
   Flex,
   HStack,
   Heading,
+  Image,
   List,
   Spacer,
+  Tag,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -49,6 +51,14 @@ export default function PostPage() {
           <Text as={"b"}>Unpublished</Text>
         </HStack>
       )}
+      <HStack>
+        {post.tags.map((tag) => (
+          <Tag key={tag}>{tag}</Tag>
+        ))}
+      </HStack>
+      <Flex justify="center" my={4}>
+        <Image src={post.coverImageUrl} />
+      </Flex>
       <Box
         dangerouslySetInnerHTML={{ __html: post.content }}
         p={4}
