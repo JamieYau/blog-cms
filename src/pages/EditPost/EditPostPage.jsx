@@ -4,6 +4,7 @@ import { getPost, updatePost } from "../../api";
 import PostForm from "../../components/PostForm";
 import { Flex, Spinner } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
+import { createFormData } from "../../helpers";
 
 export default function EditPostPage() {
   const navigate = useNavigate();
@@ -24,29 +25,20 @@ export default function EditPostPage() {
     fetchPost();
   }, [postId]);
 
-const handleUpdatePost = async (values) => {
-  setIsSubmitting(true);
-  try {
-    const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("content", values.content);
-    formData.append("published", values.published || false);
-    if (values.coverImage) {
-      formData.append("coverImage", values.coverImage);
+  const handleUpdatePost = async (values) => {
+    setIsSubmitting(true);
+    try {
+      const formData = createFormData(values);
+      await updatePost(postId, formData);
+      navigate(`/posts/${postId}`);
+    } catch (error) {
+      setError("root", {
+        message: error.message || "An error occurred. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-    const tagsString = values.tags.join(","); // Convert array to comma-separated string
-    formData.append("tags", tagsString);
-
-    await updatePost(postId, formData);
-    navigate(`/posts/${postId}`);
-  } catch (error) {
-    setError("root", {
-      message: error.message || "An error occurred. Please try again.",
-    });
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   if (!initialData) {
     return (
