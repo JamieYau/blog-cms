@@ -13,30 +13,34 @@ const transformTag = (tag) => {
 };
 
 export default function InputTag({ initialTags, onChange }) {
-  const [dataInput, setDataInput] = useState([...initialTags]);
+  const [tags, setTags] = useState([...initialTags]);
   const refInput = useRef(null);
 
   const handleKeyDown = (event) => {
-    let newText = refInput.current.value.trim().replace(",", "");
+    let newTag = refInput.current.value.trim().replace(",", "");
     switch (event.key) {
       case ",":
       case " ":
       case "Enter":
         event.preventDefault(); // Prevent default behavior
-        if (newText.length > 0) {
-          newText = transformTag(newText);
-          const dataInputTemp = [...dataInput, newText];
-          setDataInput(dataInputTemp);
+        if (newTag.length > 0) {
+          newTag = transformTag(newTag);
+          if ([...tags].includes(newTag)) {
+            refInput.current.value = "";
+            break;
+          }
+          const tempTags = [...tags, newTag];
+          setTags(tempTags);
           refInput.current.value = "";
-          onChange(dataInputTemp);
+          onChange(tempTags);
         }
         break;
       case "Backspace":
-        if (refInput.current.value === "" && dataInput.length > 0) {
-          const dataInputTemp = [...dataInput];
-          dataInputTemp.pop();
-          setDataInput(dataInputTemp);
-          onChange(dataInputTemp);
+        if (refInput.current.value === "" && tags.length > 0) {
+          const tempTags = [...tags];
+          tempTags.pop();
+          setTags(tempTags);
+          onChange(tempTags);
         }
         break;
       default:
@@ -50,16 +54,16 @@ export default function InputTag({ initialTags, onChange }) {
   };
 
   const handleDelItem = (index) => {
-    const dataInputTemp = [...dataInput];
-    dataInputTemp.splice(index, 1);
-    setDataInput(dataInputTemp);
-    onChange(dataInputTemp);
+    const tempTags = [...tags];
+    tempTags.splice(index, 1);
+    setTags(tempTags);
+    onChange(tempTags);
   };
 
   return (
     <Box border="1px solid #e2e8f0" borderRadius="5px" p={2}>
       <Flex align="center" gap={1} onClick={() => refInput.current.focus()}>
-        {dataInput.map((text, i) => (
+        {tags.map((text, i) => (
           <Tag key={i + "_" + text} colorScheme="teal" mt={1}>
             {text}
             <TagCloseButton onClick={() => handleDelItem(i)} />
