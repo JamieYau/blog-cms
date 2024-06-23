@@ -13,6 +13,7 @@ import {
 import { Editor } from "@tinymce/tinymce-react";
 import { z } from "zod";
 import InputTag from "./InputTag";
+import { useEffect, useState } from "react";
 
 const TINYMCE_API_KEY = import.meta.env.VITE_TINYMCE_API_KEY;
 
@@ -40,10 +41,19 @@ export default function PostForm({
     defaultValues: initialValues,
   });
 
+  const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    if (initialValues.coverImageUrl) {
+      setImagePreview(initialValues.coverImageUrl);
+    }
+  }, [initialValues.coverImageUrl]);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setValue("coverImage", file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -62,11 +72,19 @@ export default function PostForm({
       </FormControl>
       <FormControl>
         <FormLabel htmlFor="cover-image">Cover Image</FormLabel>
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Cover Preview"
+            style={{ width: "200px", marginBottom: "10px" }}
+          />
+        )}
         <Input
           id="cover-image"
           type="file"
           onChange={handleFileChange}
           accept="image/*"
+          p={1}
         />
       </FormControl>
       <FormControl isInvalid={errors.content}>

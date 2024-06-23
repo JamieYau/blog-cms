@@ -12,7 +12,7 @@ const transformTag = (tag) => {
   return `#${capitalizedTag.replace(/^#/, "")}`; // Ensure # prefix and remove any leading #
 };
 
-export default function InputTag({ initialTags, onChange }) {
+export default function InputTag({ initialTags = [], onChange }) {
   const [tags, setTags] = useState([...initialTags]);
   const refInput = useRef(null);
 
@@ -84,8 +84,4 @@ export default function InputTag({ initialTags, onChange }) {
 InputTag.propTypes = {
   initialTags: PropTypes.arrayOf(PropTypes.string),
   onChange: PropTypes.func.isRequired,
-};
-
-InputTag.defaultProps = {
-  initialTags: [],
 };
