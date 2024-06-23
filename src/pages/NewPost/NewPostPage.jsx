@@ -19,7 +19,7 @@ export default function NewPostPage() {
       if (values.coverImage) {
         formData.append("coverImage", values.coverImage);
       }
-      formData.append("tags", values.tags || "");
+      formData.append("tags", JSON.stringify(values.tags || []));
 
       await createPost(formData);
       navigate("/");
@@ -31,6 +31,7 @@ export default function NewPostPage() {
       setIsSubmitting(false);
     }
   };
+
 
   return <PostForm onSubmit={handleCreatePost} isSubmitting={isSubmitting} />;
 }

@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { Editor } from "@tinymce/tinymce-react";
 import { z } from "zod";
+import InputTag from "./InputTag";
 
 const TINYMCE_API_KEY = import.meta.env.VITE_TINYMCE_API_KEY;
 
@@ -19,8 +20,8 @@ const postSchema = z.object({
   title: z.string().min(3, "Title is required"),
   content: z.string().min(8, "Content must be at least 8 characters long"),
   published: z.boolean().optional(),
-  tags: z.string().optional(), // Assuming tags is a comma-separated string
-  coverImage: z.any().optional(), // Include coverImage in the schema
+  tags: z.array(z.string()).optional(),
+  coverImage: z.any().optional(),
 });
 
 export default function PostForm({
@@ -44,6 +45,10 @@ export default function PostForm({
     if (file) {
       setValue("coverImage", file);
     }
+  };
+
+  const handleTagsChange = (tags) => {
+    setValue("tags", tags);
   };
 
   return (
@@ -108,11 +113,9 @@ export default function PostForm({
       </Flex>
       <FormControl isInvalid={errors.tags}>
         <FormLabel htmlFor="tags">Tags</FormLabel>
-        <Input
-          id="tags"
-          placeholder="Tags"
-          {...register("tags")}
-          // Assuming tags should be comma-separated
+        <InputTag
+          initialTags={initialValues.tags || []}
+          onChange={handleTagsChange}
         />
         <FormErrorMessage>
           {errors.tags && errors.tags.message}
@@ -135,6 +138,7 @@ PostForm.propTypes = {
     title: PropTypes.string,
     content: PropTypes.string,
     published: PropTypes.bool,
+    tags: PropTypes.arrayOf(PropTypes.string), // Adjust this to match your new tags structure
   }),
   onSubmit: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool.isRequired,
