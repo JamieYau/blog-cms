@@ -19,7 +19,8 @@ export default function NewPostPage() {
       if (values.coverImage) {
         formData.append("coverImage", values.coverImage);
       }
-      formData.append("tags", JSON.stringify(values.tags || []));
+      const tagsString = values.tags.join(",");
+      formData.append("tags", tagsString);
 
       await createPost(formData);
       navigate("/");
