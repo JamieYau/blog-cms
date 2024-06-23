@@ -108,9 +108,10 @@ export default function PostForm({
               "table",
               "visualblocks",
               "wordcount",
+              "image",
             ],
             toolbar:
-              "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
+              "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | image codesample | emoticons charmap | removeformat",
           }}
           onEditorChange={(content) => {
             setValue("content", content, { shouldValidate: true });

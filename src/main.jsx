@@ -3,6 +3,9 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css"
+import "prismjs/themes/prism-tomorrow.css";
+import "prismjs/plugins/line-numbers/prism-line-numbers.css";
+import "prismjs";
 
 // extend the theme
 const theme = extendTheme({

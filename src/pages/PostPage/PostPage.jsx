@@ -15,9 +15,15 @@ import { useLoaderData } from "react-router-dom";
 import Comment from "../../components/Comment";
 import { formattedDate } from "../../helpers";
 import { CheckCircleIcon, ViewOffIcon } from "@chakra-ui/icons";
+import Prism from "prismjs";
+import { useEffect } from "react";
 
 export default function PostPage() {
   const { post, comments } = useLoaderData();
+
+   useEffect(() => {
+     Prism.highlightAll();
+   }, [post.content]);
   return (
     <>
       <Heading mb={2}>{post.title}</Heading>
