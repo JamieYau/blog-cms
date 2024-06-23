@@ -243,10 +243,9 @@ export async function updatePost(postId, postData) {
     const response = await fetch(`${BASE_URL}/posts/${postId}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(postData),
+      body: postData,
     });
 
     if (response.ok) {
