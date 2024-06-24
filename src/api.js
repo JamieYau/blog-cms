@@ -128,7 +128,7 @@ export async function getPostComments(postId) {
 
 export async function login(username, password) {
   try {
-    const response = await fetch(`${BASE_URL}/auth/login`, {
+    const response = await fetch(`${BASE_URL}/auth/login-cms`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
