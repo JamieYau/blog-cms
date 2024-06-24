@@ -2,10 +2,10 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 
 export async function getPosts() {
   try {
-    const token = localStorage.getItem("token");
+    const accessToken = localStorage.getItem("accessToken");
     const headers = {
       "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
     };
 
     const response = await fetch(`${BASE_URL}/posts`, { headers });
@@ -133,6 +133,7 @@ export async function login(username, password) {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ username, password }),
     });
     const data = await response.json();
@@ -147,13 +148,33 @@ export async function login(username, password) {
   }
 }
 
+export async function refreshToken() {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/refresh-token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Can't refresh Token");
+    }
+    return data;
+  } catch (error) {
+    throw new Error(error.message || "An error occurred");
+  }
+}
+
 export async function postComment(postId, comment) {
-  const token = localStorage.getItem("token");
+  const accessToken = localStorage.getItem("accessToken");
   const response = await fetch(`${BASE_URL}/posts/${postId}/comments`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify(comment),
   });
@@ -161,13 +182,13 @@ export async function postComment(postId, comment) {
 }
 
 export async function deletePostById(postId) {
-  const token = localStorage.getItem("token");
+  const accessToken = localStorage.getItem("accessToken");
   try {
     const response = await fetch(`${BASE_URL}/posts/${postId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     if (response.status === 204) {
@@ -182,12 +203,12 @@ export async function deletePostById(postId) {
 }
 
 export async function createPost(postData) {
-  const token = localStorage.getItem("token");
+  const accessToken = localStorage.getItem("accessToken");
   try {
     const response = await fetch(`${BASE_URL}/posts`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: postData, // Send FormData object directly
     });
@@ -217,13 +238,13 @@ export async function createPost(postData) {
 }
 
 export async function deleteComment(commentId) {
-  const token = localStorage.getItem("token");
+  const accessToken = localStorage.getItem("accessToken");
   try {
     const response = await fetch(`${BASE_URL}/comments/${commentId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     if (response.status === 204) {
@@ -238,12 +259,12 @@ export async function deleteComment(commentId) {
 }
 
 export async function updatePost(postId, postData) {
-  const token = localStorage.getItem("token");
+  const accessToken = localStorage.getItem("accessToken");
   try {
     const response = await fetch(`${BASE_URL}/posts/${postId}`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: postData,
     });
@@ -273,13 +294,13 @@ export async function updatePost(postId, postData) {
 }
 
 export async function updateComment(commentId, content) {
-  const token = localStorage.getItem("token");
+  const accessToken = localStorage.getItem("accessToken");
   try {
     const response = await fetch(`${BASE_URL}/comments/${commentId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(content),
     });
