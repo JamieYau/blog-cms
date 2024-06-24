@@ -1,5 +1,40 @@
 const BASE_URL = import.meta.env.VITE_API_URL;
 
+//helper function to format comments and projects with author
+export async function formatWithAuthor(item) {
+  try {
+    const authorResponse = await fetch(`${BASE_URL}/users/${item.authorId}`);
+    const authorData = await authorResponse.json();
+
+    if (!authorData.success) {
+      throw new Error("Failed to fetch author details: " + authorData.errors);
+    }
+
+    return {
+      ...item,
+      author: authorData.data.username,
+    };
+  } catch (error) {
+    console.error("Error fetching author details:", error);
+    throw error;
+  }
+}
+
+export function handleResponseError(response) {
+  return response.json().then((errorData) => {
+    let errorMessage = "An error occurred";
+    if (response.status === 403) {
+      errorMessage =
+        "You are not authorized to perform this action. Please Login.";
+    } else if (response.status === 400) {
+      errorMessage = errorData.error || "Invalid request";
+    } else {
+      errorMessage = errorData.error || "An unexpected error occurred";
+    }
+    throw new Error(errorMessage);
+  });
+}
+
 export async function getPosts() {
   try {
     const accessToken = localStorage.getItem("accessToken");
@@ -7,38 +42,20 @@ export async function getPosts() {
       "Content-Type": "application/json",
       ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
     };
-
     const response = await fetch(`${BASE_URL}/posts`, { headers });
-
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error("Failed to fetch posts: " + errorData.errors);
     }
-
     const postsData = await response.json();
     if (!postsData.success) {
       throw new Error("Failed to fetch posts: " + postsData.errors);
     }
 
-    const posts = postsData.data;
-
-    // Fetch the authors in parallel
-    const authorPromises = posts.map((post) =>
-      fetch(`${BASE_URL}/users/${post.authorId}`).then((res) => res.json())
+    // Fetch the author's name for each post
+    const postsWithAuthors = await Promise.all(
+      postsData.data.map(formatWithAuthor)
     );
-
-    const authors = await Promise.all(authorPromises);
-
-    const postsWithAuthors = posts.map((post, index) => {
-      const authorData = authors[index];
-      if (!authorData.success) {
-        console.warn(
-          `Failed to fetch author details for post ${post._id}: ${authorData.errors}`
-        );
-        return { ...post, author: "Unknown" };
-      }
-      return { ...post, author: authorData.data.username };
-    });
 
     return postsWithAuthors;
   } catch (error) {
@@ -62,24 +79,10 @@ export async function getPost(postId) {
       throw new Error("Failed to fetch post: " + postData.errors);
     }
 
-    const post = postData.data;
+    // Use formatWithAuthor to fetch the author's name
+    const postWithAuthor = await formatWithAuthor(postData.data);
 
-    // Fetch the author's name for the post
-    const authorResponse = await fetch(`${BASE_URL}/users/${post.authorId}`);
-    const authorData = await authorResponse.json();
-
-    if (!authorData.success) {
-      console.warn(
-        `Failed to fetch author details for post ${post._id}: ${authorData.errors}`
-      );
-      return { ...post, author: "Unknown" };
-    }
-
-    // Add the author's name to the post data
-    return {
-      ...post,
-      author: authorData.data.username,
-    };
+    return postWithAuthor;
   } catch (error) {
     console.error("Error fetching post:", error);
     throw error; // Re-throw the error for the caller to handle
@@ -88,7 +91,6 @@ export async function getPost(postId) {
 
 // Function to get all comments for a post
 export async function getPostComments(postId) {
-  let comments;
   // Fetch the list of blog comments from your API
   try {
     const response = await fetch(`${BASE_URL}/posts/${postId}/comments`);
@@ -96,34 +98,15 @@ export async function getPostComments(postId) {
     if (!commentsData.success) {
       throw new Error("Failed to fetch comments: " + commentsData.errors);
     }
-    comments = commentsData.data;
-
     // Fetch the author's name for each comment
     const commentsWithAuthors = await Promise.all(
-      comments.map(async (comment) => {
-        const authorResponse = await fetch(
-          `${BASE_URL}/users/${comment.authorId}`
-        );
-        const authorData = await authorResponse.json();
-
-        if (!authorData.success) {
-          throw new Error(
-            "Failed to fetch author details for post: " + authorData.errors
-          );
-        }
-
-        return {
-          ...comment,
-          author: authorData.data.username,
-        };
-      })
+      commentsData.data.map(formatWithAuthor)
     );
-    comments = commentsWithAuthors;
+    return commentsWithAuthors;
   } catch (error) {
     console.error("Error fetching comments:", error);
     return null;
   }
-  return comments;
 }
 
 export async function login(username, password) {
@@ -216,21 +199,7 @@ export async function createPost(postData) {
     if (response.ok) {
       return; // Success
     }
-
-    // Handle non-2xx responses
-    let errorMessage = "An error occurred";
-    if (response.status === 403) {
-      errorMessage =
-        "You are not authorized to perform this action. Please Login.";
-    } else if (response.status === 400) {
-      const errorData = await response.json();
-      errorMessage = errorData.error || "Invalid request";
-    } else {
-      const errorData = await response.json();
-      errorMessage = errorData.error || "An unexpected error occurred";
-    }
-
-    throw new Error(errorMessage);
+    handleResponseError(response);
   } catch (error) {
     console.error("Error creating post:", error);
     throw error;
@@ -272,21 +241,7 @@ export async function updatePost(postId, postData) {
     if (response.ok) {
       return; // Success
     }
-
-    // Handle non-2xx responses
-    let errorMessage = "An error occurred";
-    if (response.status === 403) {
-      errorMessage =
-        "You are not authorized to perform this action. Please Login.";
-    } else if (response.status === 400) {
-      const errorData = await response.json();
-      errorMessage = errorData.error || "Invalid request";
-    } else {
-      const errorData = await response.json();
-      errorMessage = errorData.error || "An unexpected error occurred";
-    }
-
-    throw new Error(errorMessage);
+    handleResponseError(response);
   } catch (error) {
     console.error("Error Updating post:", error);
     throw error;
@@ -308,21 +263,7 @@ export async function updateComment(commentId, content) {
     if (response.ok) {
       return; // Success
     }
-
-    // Handle non-2xx responses
-    let errorMessage = "An error occurred";
-    if (response.status === 403) {
-      errorMessage =
-        "You are not authorized to perform this action. Please Login.";
-    } else if (response.status === 400) {
-      const errorData = await response.json();
-      errorMessage = errorData.error || "Invalid request";
-    } else {
-      const errorData = await response.json();
-      errorMessage = errorData.error || "An unexpected error occurred";
-    }
-
-    throw new Error(errorMessage);
+    handleResponseError(response);
   } catch (error) {
     console.error("Error Updating comment:", error);
     throw error;
