@@ -21,9 +21,9 @@ import { useEffect } from "react";
 export default function PostPage() {
   const { post, comments } = useLoaderData();
 
-   useEffect(() => {
-     Prism.highlightAll();
-   }, [post.content]);
+  useEffect(() => {
+    Prism.highlightAll();
+  }, [post.content]);
   return (
     <>
       <Heading mb={2}>{post.title}</Heading>
@@ -66,6 +66,7 @@ export default function PostPage() {
         <Image src={post.coverImageUrl} />
       </Flex>
       <Box
+        className="post-content"
         dangerouslySetInnerHTML={{ __html: post.content }}
         p={4}
         border="1px solid"
